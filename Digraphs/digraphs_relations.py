@@ -44,12 +44,12 @@ def is_trans(ground, relation):
 
 def trans_clos(digraph):
     transitive_closure = copy.deepcopy(digraph)
-    for key in transitive_closure:
-        for element in transitive_closure[key]:
-            for vertex in transitive_closure[element]:
-                if vertex not in transitive_closure[key]:
-                    transitive_closure[key].append(vertex)
-    for key in transitive_closure: #Sort all the lists of vertex for reach dict entry, because why not.
+    for key in transitive_closure: #Takes a vertex 'key'.
+        for element in transitive_closure[key]: #Takes all the vertices with an arc between them and 'key'
+            for vertex in transitive_closure[element]: #Takes all the vertices with an arc between them and 'element'.
+                if vertex not in transitive_closure[key]: #If 'key' does not have yet an arc between 'key' and 'vertex', make one.
+                    transitive_closure[key].append(vertex) #If 'key' is connected to 'element', and 'element' is connected to 'vertex', then 'key' is connected to 'vertex'. in short, if (a,b) in digraph, and (b,c) in digraph, then (a,c) exists in the transitive closure.
+    for key in transitive_closure: #Sort all the lists of vertices for each dict entry, because why not.
         transitive_closure[key].sort()
     return transitive_closure
 
@@ -62,6 +62,7 @@ def trans_clos(digraph):
 #The algorithm makes use of the Floyd-Warshall algorithm to produce a matrix used to create the transitive closure.
 #Assumption: any negative entry in the matrix stands for "infinity".
 #Assumption: an entry in the matrix can be zero, and it is considered a valid weight.
+
 def trans_clos(digraph): #FIXME: Floyd_Warshall not needed.
     matrix = Floyd_Warshall(digraph)
     vertices = list(digraph.keys())

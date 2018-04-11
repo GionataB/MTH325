@@ -3,20 +3,22 @@ def infty(graph):
     for key in graph:
         for element in graph[key]:
             total += element[1]
-    return total
+    if total % 2 == 0:
+        total = total / 2 + 1
+    else:
+        total = total / 2 + 1.5
+    return int(total)
 
 def initial(graph):
     coloring = {}
     infinity = infty(graph)
-    first = true
+    first = True
     for key in graph:
-        coloring[key] = []
-        for element in graph[key]:
-            if first:
-                coloring[key] = 1
-                first = false
-            else:
-                coloring[key] = infinity
+        if first:
+            coloring[key] = 0
+            first = False
+        else:
+            coloring[key] = infinity
     return coloring
 
 def find_min(color, queue):
@@ -29,36 +31,29 @@ def find_min(color, queue):
     return vertex
 
 def dijkstra(graph):
-    source = "A" #This is the source for any graph of the dijkstra algorithm.
     infinity = infty(graph)
-    vertices_to_use = list(graph.keys()).order()
-    shortest_distance = {}
-    for vertex in vertices_to_use:
-        shortest_distance[vertex] = infinity
-    shortest_distance[source] = 0
-    vertices_visited = [source]
-    vertices_to_use.remove(source)
-    for vertex in vertices_visited:
-        for element in graph[vertex]:
-            if element not in vertices_visited: #Check that the vertices being updated have not been visited
-                if shortest_distance[vertex] + element[1] < shortest_distance[element[0]]: #Check if the vertex should be updated with a new value, if the new value is lower than the current one.
-                    shortest_distance[element[0]] += shortest_distance[vertex] + element[1]
-        if not vertices_visited: #If the queue is empty, exit the loop, because every vertex has been visited.
-            break
-        minimum = infinity #The initial minimum is always the highest value.
-        for key in shortest_distance:
-            if key not in vertices_visited: #The vertex has not been visited.
-                if shortest_distance[key] < minimum:
-                    minimum = shortest_distance[key]
-                    new_vertex = key
-        else:
-            vertices_visited.append(new_vertex)
-            vertices_to_use.remove(new_vertex)
-    return shortest_distance
-
-
-
-
+    visited = []
+    queue = list(graph.keys())
+    queue.sort()
+    output = {}
+    output[queue[0]] = 0
+    for i in range(1, len(queue)):
+        output[queue[i]] = infinity
+    while queue:
+        current = queue[0]
+        for element in queue:
+            if output[element] < output[current]:
+                current = element
+        queue.remove(current)
+        for element in queue:
+            weight = infinity
+            for vertex in graph[current]:
+                if vertex[0] == element:
+                    weight = vertex[1]
+            if output[current] + weight < output[element]:
+                    output[element] = weight
+        visited.append(current)
+    return output
 
 
 def is_connected(graph):
@@ -68,8 +63,8 @@ def is_connected(graph):
         for element in graph[vertex]: #For each vertex in the list of connected vertices, check its edges
             if element[0] not in connections: #If the current edge is between a vertex connected to the graph and a unknown vertex (we do not know if it is connected), then the new vertex is connected to the rest as well.
                 connections.append(element[0]) #Append the new vertex, previously unknown, to the list of connected vertices.
-    for element in connections: #Comparing the size of the two lists would have been faster, but this is comparing each element for equality, which is safer. Assumption: there could be an undefined behavior and we could have two lists with the same size, but some elements repeated. This prevents such occurency, in exchange for a lot more comparisons.
-        if element not in keys:
+    for element in keys: #Comparing the size of the two lists would have been faster, but this is comparing each element for equality, which is safer. Assumption: there could be an undefined behavior and we could have two lists with the same size, but some elements repeated. This prevents such occurency, in exchange for a lot more comparisons.
+        if element not in connections:
             return False
     else:
         return True
