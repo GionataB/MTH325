@@ -19,6 +19,10 @@ color = {"A" : 0, "B" : 10, "C" : 10, "D" : 15}
 queue = ["A", "D"]
 print(dijkstra.find_min(color, queue)) #"A"
 print("A")
+color = {"A" : 0, "B" : 10, "C" : 10, "D" : 15}
+queue = ["B", "C", "D"]
+print(dijkstra.find_min(color, queue))
+print("B or C")
 
 
 #test dijkstra
@@ -31,6 +35,12 @@ test = {"A": [["B",10],["D",5]], "B": [["A",10], ["C",5]], "C": [["B",5],["D",15
     "E": [["F",5]], "F": [["E",5]]}
 correct = {"A" : 0,"B" : 10,"C" : 15,"D" : 5,"E" : 41,"F" : 41}
 print(dijkstra.dijkstra(test))
+print(correct)
+test = {'A':[['B',35], ['C', 10]], 'B':[['A', 35], ['D', 10]], 'C':[['A',10], ['D',5]], 'D':[['B',10], ['C',5],
+ ['E', 5]], 'E':[['D',5]]}
+correct = {'A':[['B',5], ['C', 20]], 'B':[['A', 5], ['C', 5]], 'C':[['A',20], ['B',5]], 'D':[['E',5], ['F',5]],
+'E':[['D',5], ['F',5]], 'F':[['E',5], ['F',5]]}
+print(dijkstra.dijkstra(test), dijkstra.dijkstra(correct))
 print(correct)
 
 #test is_connected

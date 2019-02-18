@@ -21,6 +21,9 @@ ground = ["A", "B", "C"]
 relation = [["A", "A"], ["A", "B"], ["A", "C"], ["B", "B"], ["B", "A"], ["C", "C"], ["C", "A"]]
 print(digraphs_relations.is_sym(ground, relation)) #True
 print("TRUE")
+relation = [['A','A'], ['A','B'], ['B', 'A'], ['B','C']]
+print(digraphs_relations.is_sym(ground, relation))
+print("FALSE")
 
 #test is_antisym
 print("------ ANTI-SYMMETRIC RELATION ------")

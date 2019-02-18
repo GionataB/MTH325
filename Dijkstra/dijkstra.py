@@ -1,24 +1,27 @@
+#!/usr/bin/env python3
+
+import copy
+
 def infty(graph):
     total = 0
     for key in graph:
-        for element in graph[key]:
+        for element in graph[key]: #element is a list where the first index is a string, and the second index is a number.
             total += element[1]
-    if total % 2 == 0:
-        total = total / 2 + 1
+    #Divide the total by two because the program counted every edge two times. Add one because of the specifications given.
+    if total % 2 == 0: #Assumption: the total is an integer. The result from the operation is either a number in the format X, or format X.5, where X is the integer part.
+        total = total / 2 + 1 #If the result is in the format X
     else:
-        total = total / 2 + 1.5
-    return int(total)
+        total = total / 2 + 1.5 #If the result is in the format X.5
+    return int(total) #Becuase in Python the result of a division is a floating point, transform the float number in the format X.0, to an integer equal to X
 
 def initial(graph):
+    graph_copy = copy.deepcopy(graph)
     coloring = {}
     infinity = infty(graph)
-    first = True
-    for key in graph:
-        if first:
-            coloring[key] = 0
-            first = False
-        else:
-            coloring[key] = infinity
+    coloring["A"] = 0 #The specifications define "A" as the first vertex.
+    del graph_copy["A"] #Remove "A"
+    for key in graph_copy:
+        coloring[key] = infinity #Everything else to infinity
     return coloring
 
 def find_min(color, queue):
@@ -26,35 +29,28 @@ def find_min(color, queue):
     min = color[vertex]
     for element in queue:
         if color[element] < min:
-            min = color[element]
-            vertex = element
+            min = color[element] #Retrieve the element's value.
+            vertex = element #Assign the corresponding vertex.
     return vertex
 
 def dijkstra(graph):
-    infinity = infty(graph)
-    visited = []
-    queue = list(graph.keys())
-    queue.sort()
-    output = {}
-    output[queue[0]] = 0
-    for i in range(1, len(queue)):
-        output[queue[i]] = infinity
-    while queue:
-        current = queue[0]
-        for element in queue:
-            if output[element] < output[current]:
-                current = element
-        queue.remove(current)
-        for element in queue:
-            weight = infinity
+    infinity = infty(graph) #Define what our "infinity" is in this instance.
+    visited = [] #This contains all vertices already visited by the algorithm. It is used only as a record of all vertices.
+    queue = list(graph.keys()) #Each key is a vertex to be visited.
+    queue.sort() #Sort the list of vertices, which is our queue for the Dijkstra algorithm.
+    output = initial(graph)
+    while queue: #Run as long as the queue is not empty
+        current = find_min(output, queue) #Get the next vertex in the queue with lowest value.
+        queue.remove(current) #Get it out of the queue.
+        for element in queue: #Update the rest of the queue
+            weight = infinity #If a vertex in the queue does not have an edge between itself and the current vertex, do not update it.
             for vertex in graph[current]:
-                if vertex[0] == element:
+                if vertex[0] == element: #Get all elements left in the queue that are linked to the current vertex through an edge.
                     weight = vertex[1]
             if output[current] + weight < output[element]:
-                    output[element] = weight
+                output[element] = weight
         visited.append(current)
     return output
-
 
 def is_connected(graph):
     keys = list(graph.keys())
