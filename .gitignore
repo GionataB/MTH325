@@ -1,3 +1,4 @@
 *pycache*
 *.pdf
 *.pyc
+.DS_store
